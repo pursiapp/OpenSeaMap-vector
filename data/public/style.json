@@ -1120,8 +1120,8 @@
             "small_craft_facility/slipway",
             "visitor_berth",
             "small_craft_facility/visitor_berth",
-            "visitor_mooring",
-            "small_craft_facility/visitor_mooring",
+            "visitors_mooring",
+            "small_craft_facility/visitors_mooring",
             ""
           ]
         ],

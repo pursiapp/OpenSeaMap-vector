@@ -163,11 +163,11 @@ export const LEGEND: LegendCategory[] = [
       },
       {
         label: 'Visitor Mooring',
-        icon: `${ICON_BASE_URL}/small_craft_facility/visitor_mooring.svg`,
+        icon: `${ICON_BASE_URL}/small_craft_facility/visitors_mooring.svg`,
         tags: [
           {
             'seamark:type': 'small_craft_facility',
-            'seamark:small_craft_facility:category': 'visitor_mooring',
+            'seamark:small_craft_facility:category': 'visitors_mooring',
           },
         ],
         labelAttributes: BERTH_LABEL_KEYS,
