@@ -954,7 +954,33 @@
         "icon-size": 0.3,
         "icon-rotation-alignment": "map",
         "icon-keep-upright": false,
-        "text-field": ["get", "name"],
+        "text-field": [
+          "let",
+          "name",
+          [
+            "coalesce",
+            ["get", "seamark:name"],
+            ["get", "ref"],
+            ["get", "name"],
+            ["get", "operator"],
+            ""
+          ],
+          [
+            "concat",
+            [
+              "case",
+              ["!=", ["var", "name"], ""],
+              ["concat", ["var", "name"], "\n"],
+              ""
+            ],
+            [
+              "case",
+              ["has", "opening_hours"],
+              ["concat", ["get", "opening_hours"], "\n"],
+              ""
+            ]
+          ]
+        ],
         "text-size": 10,
         "text-justify": "center",
         "text-anchor": "top",
@@ -1102,66 +1128,79 @@
         "icon-size": 0.3,
         "icon-keep-upright": false,
         "text-field": [
-          "format",
+          "let",
+          "name",
           [
             "coalesce",
             ["get", "seamark:name"],
             ["get", "ref"],
             ["get", "name"],
-            ["get", "operator"]
-          ],
-          {},
-          "\n",
-          {},
-          [
-            "case",
-            [
-              "any",
-              ["has", "maxstay"],
-              ["has", "maxdraft"],
-              ["has", "maxlength"],
-              ["has", "maxwidth"],
-              ["has", "maxweight"]
-            ],
-            [
-              "concat",
-              "max",
-              [
-                "case",
-                ["has", "maxstay"],
-                ["concat", ". ", ["get", "maxstay"]],
-                ""
-              ],
-              [
-                "case",
-                ["has", "maxweight"],
-                ["concat", ". ", ["get", "maxweight"], "t"],
-                ""
-              ],
-              [
-                "case",
-                ["has", "maxdraft"],
-                ["concat", ". ", ["get", "maxdraft"], "m draft"],
-                ""
-              ],
-              [
-                "case",
-                ["has", "maxlength"],
-                ["concat", ". ", ["get", "maxlength"], "m LOA"],
-                ""
-              ],
-              [
-                "case",
-                ["has", "maxwidth"],
-                ["concat", ". ", ["get", "maxwidth"], "m wide"],
-                ""
-              ]
-            ],
-            ["has", "_fuel"],
-            ["get", "_fuel"],
+            ["get", "operator"],
             ""
           ],
-          {}
+          [
+            "concat",
+            [
+              "case",
+              ["!=", ["var", "name"], ""],
+              ["concat", ["var", "name"], "\n"],
+              ""
+            ],
+            [
+              "case",
+              ["has", "opening_hours"],
+              ["concat", ["get", "opening_hours"], "\n"],
+              ""
+            ],
+            [
+              "case",
+              [
+                "any",
+                ["has", "maxstay"],
+                ["has", "maxdraft"],
+                ["has", "maxlength"],
+                ["has", "maxwidth"],
+                ["has", "maxweight"]
+              ],
+              [
+                "concat",
+                "max",
+                [
+                  "case",
+                  ["has", "maxstay"],
+                  ["concat", ". ", ["get", "maxstay"]],
+                  ""
+                ],
+                [
+                  "case",
+                  ["has", "maxweight"],
+                  ["concat", ". ", ["get", "maxweight"], "t"],
+                  ""
+                ],
+                [
+                  "case",
+                  ["has", "maxdraft"],
+                  ["concat", ". ", ["get", "maxdraft"], "m draft"],
+                  ""
+                ],
+                [
+                  "case",
+                  ["has", "maxlength"],
+                  ["concat", ". ", ["get", "maxlength"], "m LOA"],
+                  ""
+                ],
+                [
+                  "case",
+                  ["has", "maxwidth"],
+                  ["concat", ". ", ["get", "maxwidth"], "m wide"],
+                  ""
+                ]
+              ],
+              ["has", "_fuel"],
+              ["get", "_fuel"],
+              ""
+            ]
+          ]
         ],
         "text-size": 10,
         "text-max-width": 20,
