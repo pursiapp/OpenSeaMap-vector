@@ -21,6 +21,21 @@ describe(renderNoticeMark, () => {
     expect(svgToString(svg!.svg)).toMatchFileSnapshot('notice-single.svg');
   });
 
+  it('handles a mix of :n: and semicolon-delimeted values', () => {
+    const svg = renderNoticeSvg(
+      {
+        // this is obviously bad tagging, but we can still support it
+        'seamark:notice:category': 'limited_depth',
+        'seamark:notice:1:category': 'overhead_cable;limited_headroom;',
+        'seamark:notice:2:category': ';no_high_speeds',
+      },
+      2,
+      2,
+    )!;
+
+    expect(svgToString(svg!.svg)).toMatchFileSnapshot('notice-semicolon.svg');
+  });
+
   it('can render a grid of every possible icons', () => {
     const tags: Tags = {};
     let i = 0;

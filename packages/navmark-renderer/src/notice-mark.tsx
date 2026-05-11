@@ -1115,6 +1115,8 @@ export function renderNoticeSvg(
     .filter(
       ([key]) => key.startsWith('seamark:notice:') && key.endsWith(':category'),
     )
+    .flatMap(([key, v]) => v.split(';').map((value) => [key, value] as const))
+    .filter(([, value]) => !!value)
     .map(([key, id]) => ({
       // slot is either an empty string or '1:', '2:', ...
       slot: key.split('notice:')[1]!.split('category')[0]!,
