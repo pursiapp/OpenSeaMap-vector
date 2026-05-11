@@ -173,7 +173,7 @@ export const LEGEND: LegendCategory[] = [
       {
         label: 'Rowing Club',
         icon: `${ICON_BASE_URL}/small_craft_facility/yacht_club.svg`,
-        tags: [{ sport: 'rowing' }],
+        tags: [{ club: 'sport', sport: 'rowing' }],
       },
       {
         label: 'Sea Scout Club',
@@ -184,8 +184,8 @@ export const LEGEND: LegendCategory[] = [
         label: 'Yacht Club',
         icon: `${ICON_BASE_URL}/small_craft_facility/yacht_club.svg`,
         tags: [
-          { sport: 'sailing' },
           { club: 'sailing' },
+          { club: 'sport', sport: 'sailing' },
           { club: 'yachting' },
           { club: 'boating' },
           { club: 'boat' },

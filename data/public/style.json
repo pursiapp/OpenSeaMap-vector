@@ -38,8 +38,11 @@
         ["==", "club", "boating"],
         ["==", "club", "yachting"],
         ["==", "club", "sailing"],
-        ["==", "sport", "sailing"],
-        ["==", "sport", "rowing"],
+        [
+          "all",
+          ["==", "club", "sport"],
+          ["any", ["==", "sport", "sailing"], ["==", "sport", "rowing"]]
+        ],
         ["==", "scout", "sea"]
       ],
       "layout": {
@@ -76,8 +79,11 @@
         ["==", "club", "boating"],
         ["==", "club", "yachting"],
         ["==", "club", "sailing"],
-        ["==", "sport", "sailing"],
-        ["==", "sport", "rowing"],
+        [
+          "all",
+          ["==", "club", "sport"],
+          ["any", ["==", "sport", "sailing"], ["==", "sport", "rowing"]]
+        ],
         ["==", "scout", "sea"]
       ],
       "layout": {
