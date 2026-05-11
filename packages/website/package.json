@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "start": "vite",
-    "build": "tsx scripts/taginfo.ts && VITE_BUILD_MODE=lib vite build && vite build && rm -rf ./dist/*.pmtiles && rm -rf ./dist/*.pbf",
+    "build": ". ./build.sh",
     "lint": "eslint . && tsc",
     "test": "echo ok"
   },

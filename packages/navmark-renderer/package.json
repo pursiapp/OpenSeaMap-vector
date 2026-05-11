@@ -5,7 +5,7 @@
   "main": "./dist/navmark-renderer.js",
   "types": "./dist/navmark-renderer.d.ts",
   "scripts": {
-    "build": "vite build",
+    "build": "vite build && tsx src/scripts/specimens.ts",
     "lint": "eslint . && tsc",
     "test": "vitest"
   },
@@ -15,7 +15,8 @@
     "@vitest/browser-webdriverio": "^4.0.18",
     "eslint": "^9.39.2",
     "eslint-config-kyle": "^28.0.1",
-    "jsx-to-xml": "^0.0.0",
+    "jsx-to-xml": "^0.0.1",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "vite": "^7.3.1",
     "vite-plugin-dts": "^4.5.4",
