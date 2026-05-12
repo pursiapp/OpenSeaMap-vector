@@ -902,6 +902,46 @@
       "minzoom": 15
     },
     {
+      "id": "mooring-dolphin",
+      "type": "circle",
+      "source": "seamarks",
+      "source-layer": "seamarks",
+      "filter": [
+        "any",
+        [
+          "all",
+          ["==", "seamark:type", "mooring"],
+          ["==", "seamark:mooring:category", "dolphin"]
+        ],
+        ["==", "man_made", "dolphin"]
+      ],
+      "paint": {
+        "circle-radius": 3,
+        "circle-color": "#fc0",
+        "circle-stroke-color": "#333",
+        "circle-stroke-width": 1
+      },
+      "minzoom": 14
+    },
+    {
+      "id": "mooring-bollard",
+      "type": "circle",
+      "source": "seamarks",
+      "source-layer": "seamarks",
+      "filter": [
+        "all",
+        ["==", "seamark:type", "mooring"],
+        ["==", "seamark:mooring:category", "bollard"]
+      ],
+      "paint": {
+        "circle-radius": 3,
+        "circle-color": "#fff",
+        "circle-stroke-color": "#333",
+        "circle-stroke-width": 1
+      },
+      "minzoom": 14
+    },
+    {
       "id": "turning_basin[symbol]",
       "type": "symbol",
       "source": "seamarks",
@@ -1693,46 +1733,6 @@
       "paint": {
         "circle-radius": 2,
         "circle-color": "#333"
-      },
-      "minzoom": 14
-    },
-    {
-      "id": "mooring-dolphin",
-      "type": "circle",
-      "source": "seamarks",
-      "source-layer": "seamarks",
-      "filter": [
-        "any",
-        [
-          "all",
-          ["==", "seamark:type", "mooring"],
-          ["==", "seamark:mooring:category", "dolphin"]
-        ],
-        ["==", "man_made", "dolphin"]
-      ],
-      "paint": {
-        "circle-radius": 3,
-        "circle-color": "#fc0",
-        "circle-stroke-color": "#333",
-        "circle-stroke-width": 1
-      },
-      "minzoom": 14
-    },
-    {
-      "id": "mooring-bollard",
-      "type": "circle",
-      "source": "seamarks",
-      "source-layer": "seamarks",
-      "filter": [
-        "all",
-        ["==", "seamark:type", "mooring"],
-        ["==", "seamark:mooring:category", "bollard"]
-      ],
-      "paint": {
-        "circle-radius": 3,
-        "circle-color": "#fff",
-        "circle-stroke-color": "#333",
-        "circle-stroke-width": 1
       },
       "minzoom": 14
     },
