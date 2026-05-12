@@ -36,6 +36,30 @@ For [notices](https://osm.wiki/Seamarks/CEVNI_Notice_Marks) (traffic signs), the
 | ----------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
 | <img height="400" src="./packages/navmark-renderer/src/__tests__/notice-all.svg" /> | <img src="./packages/navmark-renderer/src/__tests__/__screenshots__/notice.cy.tsx/notice-2-chrome-darwin.png" height="50"/> |
 
+# Goals
+
+There are already [many](https://appchart.c-map.com/core/map) [apps](https://fishing-app.gpsnauticalcharts.com/i-boating-fishing-web-app/fishing-marine-charts-navigation.html) which render ENC data.
+For OpenStreetMap data, alternative software includes:
+
+- **OpenSeaMap.org**: raster renderer ([map](https://map.openseamap.org), [code](https://github.com/OpenSeaMap/renderer))
+- **SmRender**: raster renderer ([map](https://github.com/rahra/smrender/blob/master/doc/sample_cutout.jpg), [code](https://github.com/rahra/smrender))
+- **OpenNCS**: vector renderer, closed-source (~~map~~, ~~code~~, [research paper](https://doi.org/10.1017/S0373463322000327))
+
+This project is not trying to create another ENC renderer that is aimed purely at professional mariners.
+
+Instead, this map aims to render the valuable detail which is captured by OpenStreetMap, but deemed unimportant by the [S-57](https://www.teledynecaris.com/s-57/) spec.
+In paticular, **features related to recreational boating / sailing / paddling**.
+
+Therefore, there are several differences compared to [the original OpenSeaMap raster style](https://map.openseamap.org):
+
+- Support for normal tags like [`leisure=slipway`](https://osm.wiki/Tag:leisure=slipway), instead of requiring bizzare duplicate tags like [`seamark:small_craft_facility:category=slipway`](https://osm.wiki/Tag:seamark:small_craft_facility:category=slipway). Likewise for [`ref`](https://osm.wiki/Key:ref) instead of [`seamark:berth:name`](https://osm.wiki/Key:seamark:berth:name) or [`seamark:information`](https://osm.wiki/Key:seamark:information).
+- Renders recreational features like [kayak put-ins](https://osm.wiki/Tag:canoe=put_in), [shark nets](https://osm.wiki/Tag:barrier=shark_net), [fishing restrictions](https://osm.wiki/Tag:leisure=fishing), etc.
+- Worldwide support for notice marks (traffic signs) worldwide, not just in Europe.
+- Renders text onto notice marks, such as speed limit signs
+- Shows [`access` restrictions](https://osm.wiki/Key:access), [`fee`s](https://osm.wiki/Key:fee), and [`opening_hours`](https://osm.wiki/Key:opening_hours) for recreational facilities like visitor berths.
+- More detailed rendering of buoys, beacons, notice marks, and daymarks.
+- And many more new features! See the map legend for a full list.
+
 # Usage
 
 Besides from [viewing the map](https://kyle.kiwi/OpenSeaMap-vector), various parts of this project could be re-used in your own app.
