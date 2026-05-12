@@ -1295,37 +1295,140 @@
       "minzoom": 11
     },
     {
-      "id": "DYNAMIC",
+      "id": "DYNAMIC_icon_fixed_rotation",
       "type": "symbol",
       "source": "seamarks",
       "source-layer": "seamarks",
       "filter": [
-        "any",
-        ["==", "seamark:type", "beacon_cardinal"],
-        ["==", "seamark:type", "beacon_isolated_danger"],
-        ["==", "seamark:type", "beacon_lateral"],
-        ["==", "seamark:type", "beacon_safe_water"],
-        ["==", "seamark:type", "beacon_special_purpose"],
-        ["==", "seamark:type", "buoy_cardinal"],
-        ["==", "seamark:type", "buoy_installation"],
-        ["==", "seamark:type", "buoy_isolated_danger"],
-        ["==", "seamark:type", "buoy_lateral"],
-        ["==", "seamark:type", "buoy_safe_water"],
-        ["==", "seamark:type", "buoy_special_purpose"],
-        ["==", "seamark:type", "daymark"],
-        ["==", "seamark:type", "fog_signal"],
-        ["==", "seamark:type", "notice"],
-        ["==", "seamark:type", "light"],
-        ["==", "seamark:type", "light_minor"],
-        ["==", "seamark:type", "light_major"],
-        ["==", "seamark:type", "light_float"],
-        ["==", "seamark:type", "light_vessel"],
-        ["==", "seamark:type", "virtual_aton"],
-        ["==", "seamark:type", "mooring"],
-        ["==", "seamark:type", "platform"],
-        ["==", "seamark:type", "topmark"],
-        ["==", "man_made", "lighthouse"],
-        ["==", "man_made", "offshore_platform"]
+        "all",
+        [
+          "any",
+          ["==", "seamark:type", "beacon_cardinal"],
+          ["==", "seamark:type", "beacon_isolated_danger"],
+          ["==", "seamark:type", "beacon_lateral"],
+          ["==", "seamark:type", "beacon_safe_water"],
+          ["==", "seamark:type", "beacon_special_purpose"],
+          ["==", "seamark:type", "buoy_cardinal"],
+          ["==", "seamark:type", "buoy_installation"],
+          ["==", "seamark:type", "buoy_isolated_danger"],
+          ["==", "seamark:type", "buoy_lateral"],
+          ["==", "seamark:type", "buoy_safe_water"],
+          ["==", "seamark:type", "buoy_special_purpose"],
+          ["==", "seamark:type", "daymark"],
+          ["==", "seamark:type", "fog_signal"],
+          ["==", "seamark:type", "notice"],
+          ["==", "seamark:type", "light"],
+          ["==", "seamark:type", "light_minor"],
+          ["==", "seamark:type", "light_major"],
+          ["==", "seamark:type", "light_float"],
+          ["==", "seamark:type", "light_vessel"],
+          ["==", "seamark:type", "virtual_aton"],
+          ["==", "seamark:type", "mooring"],
+          ["==", "seamark:type", "platform"],
+          ["==", "seamark:type", "topmark"],
+          ["==", "man_made", "lighthouse"],
+          ["==", "man_made", "offshore_platform"]
+        ],
+        [
+          "any",
+          ["has", "direction"],
+          ["has", "seamark:notice:orientation"],
+          ["has", "seamark:notice:1:orientation"]
+        ]
+      ],
+      "layout": {
+        "icon-allow-overlap": true,
+        "icon-ignore-placement": true,
+        "text-optional": true,
+        "text-allow-overlap": false,
+        "icon-image": "placeholder",
+        "icon-rotation-alignment": "map",
+        "icon-rotate": [
+          "to-number",
+          [
+            "case",
+
+            ["has", "direction"],
+            ["+", 180, ["to-number", ["get", "direction"]]],
+
+            ["has", "seamark:notice:orientation"],
+            ["to-number", ["get", "seamark:notice:orientation"]],
+
+            ["has", "seamark:notice:1:orientation"],
+            ["to-number", ["get", "seamark:notice:1:orientation"]],
+
+            0
+          ]
+        ],
+        "text-field": [
+          "format",
+          [
+            "case",
+            ["==", ["get", "seamark:type"], "virtual_aton"],
+            "V-AIS\n",
+            ""
+          ],
+          {},
+          [
+            "coalesce",
+            ["get", "seamark:name"],
+            ["get", "ref"],
+            ["get", "name"]
+          ],
+          {},
+          "\n",
+          {},
+          ["get", "_lx"],
+          {}
+        ],
+        "text-anchor": "left",
+        "text-justify": "left",
+        "text-radial-offset": 1.4,
+        "text-size": 10
+      },
+      "minzoom": 11
+    },
+    {
+      "id": "DYNAMIC_icon_free_rotation",
+      "type": "symbol",
+      "source": "seamarks",
+      "source-layer": "seamarks",
+      "filter": [
+        "all",
+        [
+          "any",
+          ["==", "seamark:type", "beacon_cardinal"],
+          ["==", "seamark:type", "beacon_isolated_danger"],
+          ["==", "seamark:type", "beacon_lateral"],
+          ["==", "seamark:type", "beacon_safe_water"],
+          ["==", "seamark:type", "beacon_special_purpose"],
+          ["==", "seamark:type", "buoy_cardinal"],
+          ["==", "seamark:type", "buoy_installation"],
+          ["==", "seamark:type", "buoy_isolated_danger"],
+          ["==", "seamark:type", "buoy_lateral"],
+          ["==", "seamark:type", "buoy_safe_water"],
+          ["==", "seamark:type", "buoy_special_purpose"],
+          ["==", "seamark:type", "daymark"],
+          ["==", "seamark:type", "fog_signal"],
+          ["==", "seamark:type", "notice"],
+          ["==", "seamark:type", "light"],
+          ["==", "seamark:type", "light_minor"],
+          ["==", "seamark:type", "light_major"],
+          ["==", "seamark:type", "light_float"],
+          ["==", "seamark:type", "light_vessel"],
+          ["==", "seamark:type", "virtual_aton"],
+          ["==", "seamark:type", "mooring"],
+          ["==", "seamark:type", "platform"],
+          ["==", "seamark:type", "topmark"],
+          ["==", "man_made", "lighthouse"],
+          ["==", "man_made", "offshore_platform"]
+        ],
+        [
+          "none",
+          ["has", "direction"],
+          ["has", "seamark:notice:orientation"],
+          ["has", "seamark:notice:1:orientation"]
+        ]
       ],
       "layout": {
         "icon-allow-overlap": true,

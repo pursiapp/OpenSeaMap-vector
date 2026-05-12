@@ -17,6 +17,19 @@ export const PMTILES_URL = `${CDN_BASE_URL}/seamarks.pmtiles`;
 
 export const SCALE = globalThis.devicePixelRatio || 2;
 
+/**
+ * walks thru nested arrays in an expression with BFS, emitting
+ * everything that it encounters.
+ */
+export function* walkExpression(expression: unknown): Generator<unknown> {
+  yield expression;
+  if (Array.isArray(expression)) {
+    for (const item of expression) {
+      yield* walkExpression(item);
+    }
+  }
+}
+
 export async function getStyle() {
   const styleJson: typeof styleJsonType = await fetch(styleJsonUrl).then((r) =>
     r.json(),
@@ -82,39 +95,46 @@ export async function getStyle() {
     'vhf',
   ];
 
-  const dynamicLayer = (styleJson as StyleSpecification).layers
+  const dynamicLayers = (styleJson as StyleSpecification).layers
     .filter((l) => l.type === 'symbol')
-    .find((l) => l.id === 'DYNAMIC')!;
+    .filter((l) => l.id.startsWith('DYNAMIC_icon_'))!;
 
-  const ALL_TYPES = (
-    dynamicLayer.filter as ['==', key: string, value: string][]
-  )
-    .slice(1)
-    .map((x) => x[2]);
+  for (const dynamicLayer of dynamicLayers) {
+    // walk thru the filter and find every `['==', key, value]`,
+    // keeping only the values
+    const ALL_TYPES = [...walkExpression(dynamicLayer.filter)]
+      .filter((exp) => Array.isArray(exp))
+      .filter((exp) => exp[0] === '==' && exp[1] === 'seamark:type')
+      .map((exp) => exp[2])
+      .filter((v) => typeof v === 'string');
 
-  for (const type of ALL_TYPES) {
-    for (const attribute of ALL_ATTRIBUTES) {
-      ALL_KEYS.push(`seamark:${type}:${attribute}`);
+    for (const type of ALL_TYPES) {
+      for (const attribute of ALL_ATTRIBUTES) {
+        ALL_KEYS.push(`seamark:${type}:${attribute}`);
 
-      if (ARRAY_KEYS.has(type)) {
-        for (let i = 1; i < 10; i++) {
-          ALL_KEYS.push(`seamark:${type}:${i}:${attribute}`);
+        if (ARRAY_KEYS.has(type)) {
+          for (let i = 1; i < 10; i++) {
+            ALL_KEYS.push(`seamark:${type}:${i}:${attribute}`);
+          }
         }
       }
     }
-  }
 
-  dynamicLayer.layout!['icon-image'] = [
-    'concat',
-    ...ALL_KEYS.map(
-      (key): ExpressionSpecification => [
-        'case',
-        ['has', key],
-        ['concat', `&${key}=`, ['get', key]],
-        '',
-      ],
-    ),
-  ];
+    // reaplce the icon-image property with a URL query string.
+    // because this expression is insanely long, we generate it
+    // dynamically here, instead of hardcoding it in style.json
+    dynamicLayer.layout!['icon-image'] = [
+      'concat',
+      ...ALL_KEYS.map(
+        (key): ExpressionSpecification => [
+          'case',
+          ['has', key],
+          ['concat', `&${key}=`, ['get', key]],
+          '',
+        ],
+      ),
+    ];
+  }
 
   return styleJson as StyleSpecification;
 }
