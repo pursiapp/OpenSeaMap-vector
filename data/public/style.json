@@ -27,6 +27,38 @@
       "type": "raster"
     },
     {
+      "id": "no_entry[fill]",
+      "type": "fill",
+      "source": "seamarks",
+      "source-layer": "seamarks",
+      "filter": [
+        "any",
+        ["==", "leisure", "swimming_area"],
+        ["==", "seamark:restricted_area:restriction", "no_entry"]
+      ],
+      "paint": {
+        "fill-pattern": "no_entry",
+        "fill-opacity": 0.5
+      },
+      "minzoom": 11
+    },
+    {
+      "id": "no_entry[line]",
+      "type": "line",
+      "source": "seamarks",
+      "source-layer": "seamarks",
+      "filter": [
+        "any",
+        ["==", "leisure", "swimming_area"],
+        ["==", "seamark:restricted_area:restriction", "no_entry"]
+      ],
+      "paint": {
+        "line-color": "#f00",
+        "line-opacity": 0.5
+      },
+      "minzoom": 11
+    },
+    {
       "id": "burgee[symbol]",
       "type": "symbol",
       "source": "seamarks",
@@ -512,13 +544,16 @@
       "source": "seamarks",
       "source-layer": "seamarks",
       "filter": [
-        "any",
-        ["==", "leisure", "swimming_area"],
-        ["==", "seamark:type", "restricted_area"],
-        ["==", "seamark:type", "cable_area"],
-        ["==", "seamark:type", "pipeline_area"],
-        ["==", "seamark:type", "dumping_ground"],
-        ["==", "seamark:type", "seaplane_landing_area"]
+        "all",
+        [
+          "any",
+          ["==", "seamark:type", "restricted_area"],
+          ["==", "seamark:type", "cable_area"],
+          ["==", "seamark:type", "pipeline_area"],
+          ["==", "seamark:type", "dumping_ground"],
+          ["==", "seamark:type", "seaplane_landing_area"]
+        ],
+        ["none", ["==", "seamark:restricted_area:restriction", "no_entry"]]
       ],
       "layout": {
         "icon-allow-overlap": true,
@@ -1620,14 +1655,16 @@
       "source": "seamarks",
       "source-layer": "seamarks",
       "filter": [
-        "any",
-        ["==", "leisure", "swimming_area"],
-        ["==", "seamark:type", "restricted_area"],
-        ["==", "seamark:type", "cable_area"],
-        ["==", "seamark:type", "pipeline_area"],
-        ["==", "seamark:type", "dumping_ground"],
-        ["==", "seamark:type", "marine_farm"],
-        ["==", "seamark:type", "seaplane_landing_area"]
+        "all",
+        [
+          "any",
+          ["==", "seamark:type", "restricted_area"],
+          ["==", "seamark:type", "cable_area"],
+          ["==", "seamark:type", "pipeline_area"],
+          ["==", "seamark:type", "dumping_ground"],
+          ["==", "seamark:type", "seaplane_landing_area"]
+        ],
+        ["none", ["==", "seamark:restricted_area:restriction", "no_entry"]]
       ],
       "paint": {
         "fill-color": "#fff",
