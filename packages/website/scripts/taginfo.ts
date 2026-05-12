@@ -1,6 +1,6 @@
 import { promises as fs } from 'node:fs';
 import { join } from 'node:path';
-import type { DateString, Schema } from 'taginfo-projects';
+import type { DateString, Schema, Tag } from 'taginfo-projects';
 import type { Tags } from 'osm-api';
 import { LEGEND } from '../src/data/legend.js';
 import { validateTaginfo } from './taginfo-validation.js';
@@ -82,6 +82,29 @@ const taginfo: Schema = {
     ].map((value) => ({ key: 'seamark:type', value })),
     { key: 'man_made', value: 'lighthouse' },
     { key: 'man_made', value: 'offshore_platform' },
+
+    // add various keys with :n:
+    ...[
+      'seamark:notice:category',
+      'seamark:light:category',
+      'seamark:light:colour',
+      'seamark:light:character',
+      'seamark:light:height',
+      'seamark:light:range',
+      'seamark:light:period',
+      'seamark:light:sector_end',
+      'seamark:light:sector_start',
+      'seamark:light:sequence',
+      'seamark:light:group',
+    ].flatMap((key) =>
+      Array.from({ length: 5 }).map((_, i): Tag => {
+        const [a, b, c] = key.split(':');
+        return {
+          key: `${a}:${b}:${i + 1}:${c}`,
+          description: `same as ${key}=*, see that tag for documentation.`,
+        };
+      }),
+    ),
   ],
 };
 
