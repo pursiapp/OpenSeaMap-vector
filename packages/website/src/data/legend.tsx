@@ -232,6 +232,15 @@ export const LEGEND: LegendCategory[] = [
           },
         ],
       },
+      {
+        label: 'Canoe Portage (over land)',
+        icon: `${ICON_BASE_URL}/line-style/cable_submarine.svg`,
+        tags: [
+          { portage: 'yes' },
+          { portage: 'designated' },
+          { canoe: 'portage' },
+        ],
+      },
     ],
   },
   {

@@ -1903,9 +1903,15 @@
         ["==", "barrier", "floating_boom"],
         ["==", "barrier", "shark_net"]
       ],
+      "paint": {
+        "line-color": "#000",
+        "line-width": 2
+      },
+      "layout": {
+        "line-cap": "round"
+      },
       "minzoom": 11
     },
-
     {
       "id": "linear_barrier[text]",
       "type": "symbol",
@@ -1955,6 +1961,26 @@
         ["==", "barrier", "floating_boom"],
         ["==", "barrier", "shark_net"]
       ],
+      "minzoom": 11
+    },
+    {
+      "id": "portage[line]",
+      "type": "line",
+      "source": "seamarks",
+      "source-layer": "seamarks",
+      "filter": [
+        "any",
+        ["==", "canoe", "portage"],
+        ["==", "portage", "yes"],
+        ["==", "portage", "designated"]
+      ],
+      "paint": {
+        "line-color": "#d400d4",
+        "line-width": 2
+      },
+      "layout": {
+        "line-cap": "round"
+      },
       "minzoom": 11
     }
   ],
