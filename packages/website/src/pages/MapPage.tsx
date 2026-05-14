@@ -15,6 +15,7 @@ import { onStyleImageMissing } from '../onStyleImageMissing.js';
 import { MapPopup } from '../components/MapPopup.js';
 import { HOME_LOCATION } from '../util/region.js';
 import { Stars } from '../components/Stars.js';
+import { EliControl } from './EliControl.js';
 
 const protocol = new Protocol();
 addProtocol('pmtiles', protocol.tile);
@@ -56,6 +57,8 @@ export const MapPage: React.FC = () => {
         });
         mapRef.current = map;
 
+        map.addControl(new EliControl(), 'top-right');
+
         map.addControl(
           new GeolocateControl({
             positionOptions: {
@@ -63,7 +66,7 @@ export const MapPage: React.FC = () => {
             },
             trackUserLocation: true,
           }),
-          'bottom-right',
+          'top-right',
         );
 
         // clicking the toggle cycles thru all 3 units
@@ -75,6 +78,7 @@ export const MapPage: React.FC = () => {
         });
         map.addControl(scale);
         scale._container.style.cursor = 'pointer';
+        scale._container.style.userSelect = 'none';
         scale._container.addEventListener('click', () => {
           scale.setUnit(scaleOptions[++scaleIndex % scaleOptions.length]!);
         });
