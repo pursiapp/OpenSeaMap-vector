@@ -1,3 +1,5 @@
+set -e
+
 # icons/*.svg -> icons.{png,json}
 echo "generating sprites…"
 docker run --rm \

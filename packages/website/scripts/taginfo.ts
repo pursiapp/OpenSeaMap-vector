@@ -63,6 +63,16 @@ const taginfo: Schema = {
       icon_url:
         'https://github.com/k-yle/OpenSeaMap-vector/raw/main/packages/navmark-renderer/src/__tests__/notice-single-arrow-right.svg',
     },
+    {
+      key: 'seamark:notice:orientation',
+      value:
+        'determines the angle of notice marks. 180° offset from the standard OSM direction=* tag.',
+    },
+    {
+      key: 'seamark:notice:1:orientation',
+      value:
+        'determines the angle of notice marks. 180° offset from the standard OSM direction=* tag.',
+    },
 
     ...[
       'network:wikidata',

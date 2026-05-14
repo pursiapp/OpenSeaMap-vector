@@ -1,3 +1,5 @@
+set -e
+
 rm -rf dist
 tsx scripts/taginfo.ts
 VITE_BUILD_MODE=lib vite build

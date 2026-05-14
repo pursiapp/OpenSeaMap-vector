@@ -1,3 +1,4 @@
+set -e
 
 # download full.pbf (if it doesn't exist)
 echo "downloading the OSM planet file…"

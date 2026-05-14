@@ -441,6 +441,11 @@ export const LEGEND: LegendCategory[] = [
         ],
       },
       {
+        label: 'No Entry Area',
+        icon: `${ICON_BASE_URL}/no_entry.svg`,
+        tags: [{ 'seamark:restricted_area:restriction': 'no_entry' }],
+      },
+      {
         label: 'Permanently Moored Ship',
         icon: 'https://wiki.openstreetmap.org/w/images/f/fe/Openseamap_rendering_hulk.png',
         tags: [

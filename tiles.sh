@@ -1,3 +1,5 @@
+set -e
+
 # seamarks.pbf -> seamarks.pmtiles
 echo "running planetiler…"
 [ -f ./data/public/seamarks.pmtiles ] || docker run --rm \
