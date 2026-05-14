@@ -41,7 +41,11 @@ export function validateTaginfo(taginfo: Schema) {
   for (const layer of styleJson.layers) {
     for (const value of walk(layer)) {
       // ["get", key]
-      if (Array.isArray(value) && value[0] === 'get') {
+      if (
+        Array.isArray(value) &&
+        value[0] === 'get' &&
+        typeof value[1] === 'string'
+      ) {
         expectedTags[value[1]] ||= new Set();
       }
 

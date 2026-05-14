@@ -945,13 +945,17 @@
       "source": "seamarks",
       "source-layer": "seamarks",
       "filter": [
-        "any",
+        "all",
+        ["==", ["get", ["geometry-type"]], "Point"],
         [
-          "all",
-          ["==", "seamark:type", "mooring"],
-          ["==", "seamark:mooring:category", "dolphin"]
-        ],
-        ["==", "man_made", "dolphin"]
+          "any",
+          [
+            "all",
+            ["==", ["get", "seamark:type"], "mooring"],
+            ["==", ["get", "seamark:mooring:category"], "dolphin"]
+          ],
+          ["==", ["get", "man_made"], "dolphin"]
+        ]
       ],
       "paint": {
         "circle-radius": 3,
@@ -1219,6 +1223,17 @@
           ],
           [
             "concat",
+            [
+              "case",
+              [
+                "any",
+                ["all", ["has", "charge"], ["!=", ["get", "charge"], "no"]],
+                ["all", ["has", "toll"], ["!=", ["get", "toll"], "no"]],
+                ["all", ["has", "fee"], ["!=", ["get", "fee"], "no"]]
+              ],
+              "$$\n",
+              ""
+            ],
             [
               "case",
               ["!=", ["var", "name"], ""],
@@ -1639,10 +1654,23 @@
       "source-layer": "seamarks",
       "filter": [
         "any",
-        ["==", "building", "ship"],
-        ["==", "historic", "ship"],
-        ["==", "seamark:type", "hulk"],
-        ["==", "seamark:type", "pontoon"]
+        ["==", ["get", "building"], "ship"],
+        ["==", ["get", "historic"], "ship"],
+        ["==", ["get", "seamark:type"], "hulk"],
+        ["==", ["get", "seamark:type"], "pontoon"],
+        [
+          "all",
+          ["!=", ["get", ["geometry-type"]], "Point"],
+          [
+            "any",
+            [
+              "all",
+              ["==", ["get", "seamark:type"], "mooring"],
+              ["==", ["get", "seamark:mooring:category"], "dolphin"]
+            ],
+            ["==", ["get", "man_made"], "dolphin"]
+          ]
+        ]
       ],
       "paint": {
         "fill-color": "#fc0",
