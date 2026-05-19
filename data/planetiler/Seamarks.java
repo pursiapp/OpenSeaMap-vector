@@ -48,6 +48,7 @@ public class Seamarks implements Profile {
       "fee", //
       "charge", //
       "toll", //
+      "highway", //
       "opening_hours", //
       "rapids:name", //
       "vessel", //

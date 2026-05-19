@@ -237,13 +237,23 @@ export const LEGEND: LegendCategory[] = [
         ],
       },
       {
-        label: 'Canoe Portage (over land)',
-        icon: `${ICON_BASE_URL}/line-style/cable_submarine.svg`,
+        label: 'Canoe Portage',
+        icon: 'https://wiki.openstreetmap.org/w/images/b/b7/Rendering-highway_footway.png',
         tags: [
           { portage: 'yes' },
           { portage: 'designated' },
           { canoe: 'portage' },
           { whitewater: 'portage_way' },
+        ],
+      },
+      {
+        label: 'Canoe Portage (steps)',
+        icon: 'https://wiki.openstreetmap.org/w/images/4/44/Rendering-highway_steps.png',
+        tags: [
+          { portage: 'yes', highway: 'steps' },
+          { portage: 'designated', highway: 'steps' },
+          { canoe: 'portage', highway: 'steps' },
+          { whitewater: 'portage_way', highway: 'steps' },
         ],
       },
       {
