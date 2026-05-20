@@ -262,6 +262,7 @@ export const LEGEND: LegendCategory[] = [
         tags: [
           { 'whitewater:section_grade': '*' },
           { 'whitewater:rapid_grade': '*' },
+          { waterway: 'canoe_pass' },
         ],
         labelAttributes: ['whitewater:section_name'],
       },

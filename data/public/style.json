@@ -149,6 +149,7 @@
       "source-layer": "seamarks",
       "filter": [
         "any",
+        ["==", "waterway", "canoe_pass"],
         ["has", "whitewater:section_grade"],
         ["has", "whitewater:rapid_grade"]
       ],
@@ -175,6 +176,8 @@
             "#ff0",
             ["in", "1", ["var", "scale"]],
             "#061",
+            ["==", "waterway", "canoe_pass"],
+            "#f00",
             "transparent"
           ]
         ],
