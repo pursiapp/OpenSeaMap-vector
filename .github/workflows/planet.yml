@@ -4,15 +4,45 @@ on:
   schedule:
     - cron: "6 6 6 * *" # on the 6th day of every month
   workflow_dispatch:
+    inputs:
+      skip_download:
+        description: 'Skip planet download (use artifacts from previous run)'
+        required: false
+        default: false
+        type: boolean
+      previous_run_id:
+        description: 'Run ID to download artifacts from (required if skip_download is true)'
+        required: false
+        default: ''
+        type: string
 
 permissions:
   contents: write # needed for GitHub Release uploads
   actions: read   # needed for artifact download
 
 jobs:
-  # ── STEP 1: Download each continent PBF, filter with osmium ──
-  # (unchanged from upstream — battle-tested)
+  # ── STEP 0: Create empty GitHub Release (tag shared by all uploads) ──
+  create_release:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.meta.outputs.tag }}
+    steps:
+      - name: Set release metadata
+        id: meta
+        run: |
+          echo "tag=data/v$(date +%Y%m%d)" >> $GITHUB_OUTPUT
+          echo "name=Seamarks PMTiles — $(date +%B %Y)" >> $GITHUB_OUTPUT
+      - name: Create empty GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.meta.outputs.tag }}
+          name: ${{ steps.meta.outputs.name }}
+          make_latest: true
+
+  # ── STEP 1: Download continent PBFs, filter with osmium ──
+  # Skippable via workflow_dispatch input — artifacts persist 12h (retention-days: 0.5)
   download_planet:
+    if: ${{ !inputs.skip_download }}
     runs-on: ubuntu-latest
     continue-on-error: false
 
@@ -63,46 +93,12 @@ jobs:
           path: data/${{ matrix.continent }}.pbf
           retention-days: 0.5
 
-  # ── STEP 2: Planetiler reads all continents directly → global PMTiles → create Release ──
-  # Seamarks.java detects data/input/*.pbf and adds each as a separate OSM source.
-  # This avoids osmium merge which produces duplicate boundary nodes.
-  generate_global:
-    needs: download_planet
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-        with:
-          persist-credentials: false
-
-      - name: Download all continent PBF artifacts into data/input/
-        uses: actions/download-artifact@v5
-        with:
-          path: data/input
-          pattern: planet-*
-          merge-multiple: true
-
-      - name: Run planetiler (global — reads all .pbf from data/input/)
-        run: . ./tiles.sh
-
-      - name: Set release metadata
-        id: release
-        run: |
-          echo "tag=data/v$(date +%Y%m%d)" >> $GITHUB_OUTPUT
-          echo "name=Seamarks PMTiles — $(date +%B %Y)" >> $GITHUB_OUTPUT
-
-      - name: Upload global PMTiles to GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ steps.release.outputs.tag }}
-          name: ${{ steps.release.outputs.name }}
-          files: data/public/seamarks.pmtiles
-          make_latest: true
-
-  # ── STEP 3: Per-continent PMTiles (runs after global, parallel matrix) ──
+  # ── STEP 2: Per-continent PMTiles (runs FIRST — the primary product) ──
+  # Downloads one artifact (from current run or previous run if skip_download)
   generate_continent:
-    needs: [download_planet, generate_global]
+    needs: [download_planet, create_release]
+    # download_planet is skipped → needs is satisfied (skipped jobs pass automatically)
+    if: ${{ !cancelled() && !failure() }}
     runs-on: ubuntu-latest
 
     strategy:
@@ -123,12 +119,23 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Download continent PBF artifact
+      - name: Download continent PBF (from current run artifacts)
+        if: ${{ !inputs.skip_download }}
         uses: actions/download-artifact@v5
         with:
           name: planet-${{ matrix.continent }}
           path: data/
           merge-multiple: true
+
+      - name: Download continent PBF (from previous run via gh CLI)
+        if: ${{ inputs.skip_download }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download ${{ inputs.previous_run_id }} \
+            --repo ${{ github.repository }} \
+            --name planet-${{ matrix.continent }} \
+            --dir data/
 
       - name: Prepare continent PBF for planetiler
         run: |
@@ -142,12 +149,49 @@ jobs:
       - name: Rename output
         run: mv data/public/seamarks.pmtiles data/public/seamarks_${{ matrix.continent }}.pmtiles
 
-      - name: Set release tag
-        id: tag
-        run: echo "tag=data/v$(date +%Y%m%d)" >> $GITHUB_OUTPUT
-
       - name: Upload continent PMTiles to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.tag.outputs.tag }}
+          tag_name: ${{ needs.create_release.outputs.tag }}
           files: data/public/seamarks_${{ matrix.continent }}.pmtiles
+
+  # ── STEP 3: Global PMTiles (reads all continents directly — no merge) ──
+  # Seamarks.java detects data/input/*.pbf → adds each as separate OSM source.
+  generate_global:
+    needs: [download_planet, create_release]
+    if: ${{ !cancelled() && !failure() }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Download all continent PBFs (from current run artifacts)
+        if: ${{ !inputs.skip_download }}
+        uses: actions/download-artifact@v5
+        with:
+          path: data/input
+          pattern: planet-*
+          merge-multiple: true
+
+      - name: Download all continent PBFs (from previous run via gh CLI)
+        if: ${{ inputs.skip_download }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download ${{ inputs.previous_run_id }} \
+            --repo ${{ github.repository }} \
+            --pattern 'planet-*' \
+            --dir data/input/
+
+      - name: Run planetiler (global — reads all .pbf from data/input/)
+        run: . ./tiles.sh
+
+      - name: Upload global PMTiles to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ needs.create_release.outputs.tag }}
+          files: data/public/seamarks.pmtiles
+          make_latest: true
