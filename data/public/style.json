@@ -1348,6 +1348,8 @@
           "case",
           ["==", ["get", "amenity"], "boat_storage"],
           "small_craft_facility/boat_storage",
+          ["==", ["get", "amenity"], "fish_cleaning"],
+          "small_craft_facility/fish_cleaning",
           ["==", ["get", "leisure"], "fishing"],
           "small_craft_facility/fishing_spot",
           ["==", ["get", "leisure"], "slipway"],

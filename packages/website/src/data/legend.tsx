@@ -96,6 +96,11 @@ export const LEGEND: LegendCategory[] = [
         tags: [{ leisure: 'fishing' }],
       },
       {
+        label: 'Fish Gutting Table',
+        icon: `${ICON_BASE_URL}/small_craft_facility/fish_cleaning.svg`,
+        tags: [{ amenity: 'fish_cleaning' }],
+      },
+      {
         label: 'Freshwater Tap',
         icon: `${ICON_BASE_URL}/small_craft_facility/freshwater_tap.svg`,
         tags: [
