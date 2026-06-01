@@ -166,6 +166,7 @@
       "filter": [
         "any",
         ["==", ["get", "waterway"], "canoe_pass"],
+        ["has", "rapids"],
         ["has", "whitewater:section_grade"],
         ["has", "whitewater:rapid_grade"]
       ],
@@ -176,6 +177,7 @@
           "scale",
           [
             "concat",
+            ["get", "rapids"],
             ["get", "whitewater:section_grade"],
             ["get", "whitewater:rapid_grade"]
           ],
@@ -209,6 +211,7 @@
       "minzoom": 11,
       "filter": [
         "any",
+        ["has", "rapids"],
         ["has", "whitewater:section_grade"],
         ["has", "whitewater:rapid_grade"]
       ],
