@@ -81,14 +81,23 @@ jobs:
           pattern: planet-*
           merge-multiple: true
 
-      - name: Merge into a single pbf file
+      - name: Merge & sort continent PBFs into single file
         run: |
           docker run --rm -v $(pwd):/cwd \
             iboates/osmium:1.19.0 \
             merge \
             --progress \
             $(printf '/cwd/%s ' data/tmp_pbf/*.pbf) \
-            -o /cwd/data/public/seamarks.pbf
+            -o /cwd/data/public/seamarks_merged.pbf
+          # planetiler requires nodes sorted ascending by ID.
+          # osmium merge can produce unsorted output when continents
+          # have overlapping boundary data (duplicate nodes).
+          docker run --rm -v $(pwd):/cwd \
+            iboates/osmium:1.19.0 \
+            sort \
+            --progress \
+            -o /cwd/data/public/seamarks.pbf \
+            /cwd/data/public/seamarks_merged.pbf
 
       - name: Run planetiler (global)
         run: . ./tiles.sh
