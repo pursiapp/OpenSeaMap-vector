@@ -79,11 +79,11 @@ To edit the code for this project on your own computer:
 - If you plan to edit the Java files, follow [planetiler's instructions](https://github.com/onthegomap/planetiler/blob/main/CONTRIBUTING.md) for installing Java and setting up your IDE.
 - To generate the vector tiles:
   - change the URL in [planet.sh](./planet.sh) to [your local region](https://download.geofabrik.de).
-  - run `. ./planet.sh`
-  - run `. ./tiles.sh`
+  - run `sh ./planet.sh`
+  - run `sh ./tiles.sh`
   - now you have tiles in [./data/public](./data/public) folder!
 - To run the website:
-  - run `. ./sprite.sh`
+  - run `sh ./sprite.sh`
   - run `cd packages/navmark-renderer`
     - run `npm install`
     - run `npm run build`
