@@ -61,6 +61,92 @@
       ],
       "paint": { "line-color": "#f00", "line-opacity": 0.5 }
     },
+
+    {
+      "id": "hulk[fill]",
+      "type": "fill",
+      "source": "seamarks",
+      "source-layer": "seamarks",
+      "minzoom": 11,
+      "filter": [
+        "any",
+        ["==", ["get", "building"], "ship"],
+        ["==", ["get", "historic"], "ship"],
+        ["==", ["get", "seamark:type"], "hulk"],
+        ["==", ["get", "seamark:type"], "pontoon"],
+        [
+          "all",
+          ["!=", ["geometry-type"], "Point"],
+          [
+            "any",
+            [
+              "all",
+              ["==", ["get", "seamark:type"], "mooring"],
+              ["==", ["get", "seamark:mooring:category"], "dolphin"]
+            ],
+            ["==", ["get", "man_made"], "dolphin"]
+          ]
+        ]
+      ],
+      "paint": { "fill-color": "#fc0", "fill-outline-color": "#000" }
+    },
+    {
+      "id": "hulk[symbol]",
+      "type": "symbol",
+      "source": "seamarks",
+      "source-layer": "seamarks",
+      "minzoom": 16,
+      "filter": [
+        "any",
+        ["==", ["get", "building"], "ship"],
+        ["==", ["get", "historic"], "ship"],
+        ["==", ["get", "seamark:type"], "hulk"],
+        ["==", ["get", "seamark:type"], "pontoon"]
+      ],
+      "layout": {
+        "icon-allow-overlap": true,
+        "icon-ignore-placement": true,
+        "text-optional": true,
+        "text-allow-overlap": false,
+        "text-field": [
+          "coalesce",
+          ["get", "seamark:name"],
+          ["get", "ref"],
+          ["get", "name"]
+        ],
+        "symbol-placement": "point",
+        "text-size": 10,
+        "text-justify": "auto",
+        "text-anchor": "center",
+        "text-keep-upright": false
+      }
+    },
+
+    {
+      "id": "portage[line]",
+      "type": "line",
+      "source": "seamarks",
+      "source-layer": "seamarks",
+      "minzoom": 11,
+      "filter": [
+        "any",
+        ["==", ["get", "canoe"], "portage"],
+        ["==", ["get", "whitewater"], "portage_way"],
+        ["==", ["get", "portage"], "yes"],
+        ["==", ["get", "portage"], "designated"]
+      ],
+      "layout": { "line-cap": "round" },
+      "paint": {
+        "line-color": "#d400d4",
+        "line-width": 3,
+        "line-dasharray": [
+          "case",
+          ["==", ["get", "highway"], "steps"],
+          ["literal", [0.5, 0.5]],
+          ["literal", [1]]
+        ]
+      }
+    },
     {
       "id": "burgee[symbol]",
       "type": "symbol",
@@ -702,6 +788,7 @@
         "icon-size": 0.4
       }
     },
+
     {
       "id": "harbour[symbol]",
       "type": "symbol",
@@ -1484,217 +1571,6 @@
       }
     },
     {
-      "id": "rounding_mark_direction[symbol]",
-      "type": "symbol",
-      "source": "seamarks",
-      "source-layer": "seamarks",
-      "minzoom": 11,
-      "filter": [
-        "all",
-        [
-          "any",
-          ["==", ["get", "seamark:type"], "beacon_cardinal"],
-          ["==", ["get", "seamark:type"], "beacon_isolated_danger"],
-          ["==", ["get", "seamark:type"], "beacon_lateral"],
-          ["==", ["get", "seamark:type"], "beacon_safe_water"],
-          ["==", ["get", "seamark:type"], "beacon_special_purpose"],
-          ["==", ["get", "seamark:type"], "buoy_cardinal"],
-          ["==", ["get", "seamark:type"], "buoy_installation"],
-          ["==", ["get", "seamark:type"], "buoy_isolated_danger"],
-          ["==", ["get", "seamark:type"], "buoy_lateral"],
-          ["==", ["get", "seamark:type"], "buoy_safe_water"],
-          ["==", ["get", "seamark:type"], "buoy_special_purpose"]
-        ],
-        [
-          "any",
-          ["==", ["get", "direction"], "clockwise"],
-          ["==", ["get", "direction"], "anticlockwise"]
-        ]
-      ],
-      "layout": {
-        "icon-allow-overlap": true,
-        "icon-ignore-placement": true,
-        "icon-size": 0.5,
-        "icon-rotate": -90,
-        "icon-image": [
-          "case",
-          ["==", ["get", "direction"], "clockwise"],
-          "round_to_starboard",
-          "round_to_port"
-        ]
-      }
-    },
-    {
-      "id": "DYNAMIC_icon_fixed_rotation",
-      "type": "symbol",
-      "source": "seamarks",
-      "source-layer": "seamarks",
-      "minzoom": 11,
-      "filter": [
-        "all",
-        [
-          "any",
-          ["==", ["get", "seamark:type"], "beacon_cardinal"],
-          ["==", ["get", "seamark:type"], "beacon_isolated_danger"],
-          ["==", ["get", "seamark:type"], "beacon_lateral"],
-          ["==", ["get", "seamark:type"], "beacon_safe_water"],
-          ["==", ["get", "seamark:type"], "beacon_special_purpose"],
-          ["==", ["get", "seamark:type"], "buoy_cardinal"],
-          ["==", ["get", "seamark:type"], "buoy_installation"],
-          ["==", ["get", "seamark:type"], "buoy_isolated_danger"],
-          ["==", ["get", "seamark:type"], "buoy_lateral"],
-          ["==", ["get", "seamark:type"], "buoy_safe_water"],
-          ["==", ["get", "seamark:type"], "buoy_special_purpose"],
-          ["==", ["get", "seamark:type"], "daymark"],
-          ["==", ["get", "seamark:type"], "fog_signal"],
-          ["==", ["get", "seamark:type"], "notice"],
-          ["==", ["get", "seamark:type"], "light"],
-          ["==", ["get", "seamark:type"], "light_minor"],
-          ["==", ["get", "seamark:type"], "light_major"],
-          ["==", ["get", "seamark:type"], "light_float"],
-          ["==", ["get", "seamark:type"], "light_vessel"],
-          ["==", ["get", "seamark:type"], "virtual_aton"],
-          ["==", ["get", "seamark:type"], "mooring"],
-          ["==", ["get", "seamark:type"], "platform"],
-          ["==", ["get", "seamark:type"], "topmark"],
-          ["==", ["get", "man_made"], "lighthouse"],
-          ["==", ["get", "man_made"], "offshore_platform"]
-        ],
-        [
-          "any",
-          ["has", "direction"],
-          ["has", "seamark:notice:orientation"],
-          ["has", "seamark:notice:1:orientation"]
-        ]
-      ],
-      "layout": {
-        "icon-allow-overlap": true,
-        "icon-ignore-placement": true,
-        "text-optional": true,
-        "text-allow-overlap": false,
-        "icon-image": "placeholder",
-        "icon-rotation-alignment": "map",
-        "icon-rotate": [
-          "case",
-          ["has", "direction"],
-          [
-            "+",
-            180,
-            ["to-number", ["at", 0, ["split", ["get", "direction"], ";"]]]
-          ],
-          ["has", "seamark:notice:orientation"],
-          ["to-number", ["get", "seamark:notice:orientation"]],
-          ["has", "seamark:notice:1:orientation"],
-          ["to-number", ["get", "seamark:notice:1:orientation"]],
-          0
-        ],
-        "text-field": [
-          "format",
-          [
-            "case",
-            ["==", ["get", "seamark:type"], "virtual_aton"],
-            "V-AIS\n",
-            ""
-          ],
-          {},
-          [
-            "coalesce",
-            ["get", "seamark:name"],
-            ["get", "ref"],
-            ["get", "name"]
-          ],
-          {},
-          "\n",
-          {},
-          ["get", "_lx"],
-          {}
-        ],
-        "text-anchor": "left",
-        "text-justify": "left",
-        "text-radial-offset": 1.4,
-        "text-size": 10
-      }
-    },
-    {
-      "id": "DYNAMIC_icon_free_rotation",
-      "type": "symbol",
-      "source": "seamarks",
-      "source-layer": "seamarks",
-      "minzoom": 11,
-      "filter": [
-        "all",
-        [
-          "any",
-          ["==", ["get", "seamark:type"], "beacon_cardinal"],
-          ["==", ["get", "seamark:type"], "beacon_isolated_danger"],
-          ["==", ["get", "seamark:type"], "beacon_lateral"],
-          ["==", ["get", "seamark:type"], "beacon_safe_water"],
-          ["==", ["get", "seamark:type"], "beacon_special_purpose"],
-          ["==", ["get", "seamark:type"], "buoy_cardinal"],
-          ["==", ["get", "seamark:type"], "buoy_installation"],
-          ["==", ["get", "seamark:type"], "buoy_isolated_danger"],
-          ["==", ["get", "seamark:type"], "buoy_lateral"],
-          ["==", ["get", "seamark:type"], "buoy_safe_water"],
-          ["==", ["get", "seamark:type"], "buoy_special_purpose"],
-          ["==", ["get", "seamark:type"], "daymark"],
-          ["==", ["get", "seamark:type"], "fog_signal"],
-          ["==", ["get", "seamark:type"], "notice"],
-          ["==", ["get", "seamark:type"], "light"],
-          ["==", ["get", "seamark:type"], "light_minor"],
-          ["==", ["get", "seamark:type"], "light_major"],
-          ["==", ["get", "seamark:type"], "light_float"],
-          ["==", ["get", "seamark:type"], "light_vessel"],
-          ["==", ["get", "seamark:type"], "virtual_aton"],
-          ["==", ["get", "seamark:type"], "mooring"],
-          ["==", ["get", "seamark:type"], "platform"],
-          ["==", ["get", "seamark:type"], "topmark"],
-          ["==", ["get", "man_made"], "lighthouse"],
-          ["==", ["get", "man_made"], "offshore_platform"]
-        ],
-        [
-          "!",
-          [
-            "any",
-            ["has", "direction"],
-            ["has", "seamark:notice:orientation"],
-            ["has", "seamark:notice:1:orientation"]
-          ]
-        ]
-      ],
-      "layout": {
-        "icon-allow-overlap": true,
-        "icon-ignore-placement": true,
-        "text-optional": true,
-        "text-allow-overlap": false,
-        "icon-image": "placeholder",
-        "text-field": [
-          "format",
-          [
-            "case",
-            ["==", ["get", "seamark:type"], "virtual_aton"],
-            "V-AIS\n",
-            ""
-          ],
-          {},
-          [
-            "coalesce",
-            ["get", "seamark:name"],
-            ["get", "ref"],
-            ["get", "name"]
-          ],
-          {},
-          "\n",
-          {},
-          ["get", "_lx"],
-          {}
-        ],
-        "text-anchor": "left",
-        "text-justify": "left",
-        "text-radial-offset": 1.4,
-        "text-size": 10
-      }
-    },
-    {
       "id": "production_area[line]",
       "type": "line",
       "source": "seamarks",
@@ -1818,34 +1694,6 @@
       }
     },
     {
-      "id": "hulk[fill]",
-      "type": "fill",
-      "source": "seamarks",
-      "source-layer": "seamarks",
-      "minzoom": 11,
-      "filter": [
-        "any",
-        ["==", ["get", "building"], "ship"],
-        ["==", ["get", "historic"], "ship"],
-        ["==", ["get", "seamark:type"], "hulk"],
-        ["==", ["get", "seamark:type"], "pontoon"],
-        [
-          "all",
-          ["!=", ["geometry-type"], "Point"],
-          [
-            "any",
-            [
-              "all",
-              ["==", ["get", "seamark:type"], "mooring"],
-              ["==", ["get", "seamark:mooring:category"], "dolphin"]
-            ],
-            ["==", ["get", "man_made"], "dolphin"]
-          ]
-        ]
-      ],
-      "paint": { "fill-color": "#fc0", "fill-outline-color": "#000" }
-    },
-    {
       "id": "restricted_area[fill]",
       "type": "fill",
       "source": "seamarks",
@@ -1917,37 +1765,6 @@
         "symbol-placement": "point"
       },
       "paint": { "text-color": "#a30075" }
-    },
-    {
-      "id": "hulk[symbol]",
-      "type": "symbol",
-      "source": "seamarks",
-      "source-layer": "seamarks",
-      "minzoom": 16,
-      "filter": [
-        "any",
-        ["==", ["get", "building"], "ship"],
-        ["==", ["get", "historic"], "ship"],
-        ["==", ["get", "seamark:type"], "hulk"],
-        ["==", ["get", "seamark:type"], "pontoon"]
-      ],
-      "layout": {
-        "icon-allow-overlap": true,
-        "icon-ignore-placement": true,
-        "text-optional": true,
-        "text-allow-overlap": false,
-        "text-field": [
-          "coalesce",
-          ["get", "seamark:name"],
-          ["get", "ref"],
-          ["get", "name"]
-        ],
-        "symbol-placement": "point",
-        "text-size": 10,
-        "text-justify": "auto",
-        "text-anchor": "center",
-        "text-keep-upright": false
-      }
     },
     {
       "id": "obstruction",
@@ -2143,6 +1960,220 @@
         "text-anchor": "bottom"
       }
     },
+
+    {
+      "id": "DYNAMIC_icon_fixed_rotation",
+      "type": "symbol",
+      "source": "seamarks",
+      "source-layer": "seamarks",
+      "minzoom": 11,
+      "filter": [
+        "all",
+        [
+          "any",
+          ["==", ["get", "seamark:type"], "beacon_cardinal"],
+          ["==", ["get", "seamark:type"], "beacon_isolated_danger"],
+          ["==", ["get", "seamark:type"], "beacon_lateral"],
+          ["==", ["get", "seamark:type"], "beacon_safe_water"],
+          ["==", ["get", "seamark:type"], "beacon_special_purpose"],
+          ["==", ["get", "seamark:type"], "buoy_cardinal"],
+          ["==", ["get", "seamark:type"], "buoy_installation"],
+          ["==", ["get", "seamark:type"], "buoy_isolated_danger"],
+          ["==", ["get", "seamark:type"], "buoy_lateral"],
+          ["==", ["get", "seamark:type"], "buoy_safe_water"],
+          ["==", ["get", "seamark:type"], "buoy_special_purpose"],
+          ["==", ["get", "seamark:type"], "daymark"],
+          ["==", ["get", "seamark:type"], "fog_signal"],
+          ["==", ["get", "seamark:type"], "notice"],
+          ["==", ["get", "seamark:type"], "light"],
+          ["==", ["get", "seamark:type"], "light_minor"],
+          ["==", ["get", "seamark:type"], "light_major"],
+          ["==", ["get", "seamark:type"], "light_float"],
+          ["==", ["get", "seamark:type"], "light_vessel"],
+          ["==", ["get", "seamark:type"], "virtual_aton"],
+          ["==", ["get", "seamark:type"], "mooring"],
+          ["==", ["get", "seamark:type"], "platform"],
+          ["==", ["get", "seamark:type"], "topmark"],
+          ["==", ["get", "man_made"], "lighthouse"],
+          ["==", ["get", "man_made"], "offshore_platform"]
+        ],
+        [
+          "any",
+          ["has", "direction"],
+          ["has", "seamark:notice:orientation"],
+          ["has", "seamark:notice:1:orientation"]
+        ]
+      ],
+      "layout": {
+        "icon-allow-overlap": true,
+        "icon-ignore-placement": true,
+        "text-optional": true,
+        "text-allow-overlap": false,
+        "icon-image": "placeholder",
+        "icon-rotation-alignment": "map",
+        "icon-rotate": [
+          "case",
+          ["has", "direction"],
+          [
+            "+",
+            180,
+            ["to-number", ["at", 0, ["split", ["get", "direction"], ";"]]]
+          ],
+          ["has", "seamark:notice:orientation"],
+          ["to-number", ["get", "seamark:notice:orientation"]],
+          ["has", "seamark:notice:1:orientation"],
+          ["to-number", ["get", "seamark:notice:1:orientation"]],
+          0
+        ],
+        "text-field": [
+          "format",
+          [
+            "case",
+            ["==", ["get", "seamark:type"], "virtual_aton"],
+            "V-AIS\n",
+            ""
+          ],
+          {},
+          [
+            "coalesce",
+            ["get", "seamark:name"],
+            ["get", "ref"],
+            ["get", "name"]
+          ],
+          {},
+          "\n",
+          {},
+          ["get", "_lx"],
+          {}
+        ],
+        "text-anchor": "left",
+        "text-justify": "left",
+        "text-radial-offset": 1.4,
+        "text-size": 10
+      }
+    },
+    {
+      "id": "DYNAMIC_icon_free_rotation",
+      "type": "symbol",
+      "source": "seamarks",
+      "source-layer": "seamarks",
+      "minzoom": 11,
+      "filter": [
+        "all",
+        [
+          "any",
+          ["==", ["get", "seamark:type"], "beacon_cardinal"],
+          ["==", ["get", "seamark:type"], "beacon_isolated_danger"],
+          ["==", ["get", "seamark:type"], "beacon_lateral"],
+          ["==", ["get", "seamark:type"], "beacon_safe_water"],
+          ["==", ["get", "seamark:type"], "beacon_special_purpose"],
+          ["==", ["get", "seamark:type"], "buoy_cardinal"],
+          ["==", ["get", "seamark:type"], "buoy_installation"],
+          ["==", ["get", "seamark:type"], "buoy_isolated_danger"],
+          ["==", ["get", "seamark:type"], "buoy_lateral"],
+          ["==", ["get", "seamark:type"], "buoy_safe_water"],
+          ["==", ["get", "seamark:type"], "buoy_special_purpose"],
+          ["==", ["get", "seamark:type"], "daymark"],
+          ["==", ["get", "seamark:type"], "fog_signal"],
+          ["==", ["get", "seamark:type"], "notice"],
+          ["==", ["get", "seamark:type"], "light"],
+          ["==", ["get", "seamark:type"], "light_minor"],
+          ["==", ["get", "seamark:type"], "light_major"],
+          ["==", ["get", "seamark:type"], "light_float"],
+          ["==", ["get", "seamark:type"], "light_vessel"],
+          ["==", ["get", "seamark:type"], "virtual_aton"],
+          ["==", ["get", "seamark:type"], "mooring"],
+          ["==", ["get", "seamark:type"], "platform"],
+          ["==", ["get", "seamark:type"], "topmark"],
+          ["==", ["get", "man_made"], "lighthouse"],
+          ["==", ["get", "man_made"], "offshore_platform"]
+        ],
+        [
+          "!",
+          [
+            "any",
+            ["has", "direction"],
+            ["has", "seamark:notice:orientation"],
+            ["has", "seamark:notice:1:orientation"]
+          ]
+        ]
+      ],
+      "layout": {
+        "icon-allow-overlap": true,
+        "icon-ignore-placement": true,
+        "text-optional": true,
+        "text-allow-overlap": false,
+        "icon-image": "placeholder",
+        "text-field": [
+          "format",
+          [
+            "case",
+            ["==", ["get", "seamark:type"], "virtual_aton"],
+            "V-AIS\n",
+            ""
+          ],
+          {},
+          [
+            "coalesce",
+            ["get", "seamark:name"],
+            ["get", "ref"],
+            ["get", "name"]
+          ],
+          {},
+          "\n",
+          {},
+          ["get", "_lx"],
+          {}
+        ],
+        "text-anchor": "left",
+        "text-justify": "left",
+        "text-radial-offset": 1.4,
+        "text-size": 10
+      }
+    },
+
+    {
+      "id": "rounding_mark_direction[symbol]",
+      "type": "symbol",
+      "source": "seamarks",
+      "source-layer": "seamarks",
+      "minzoom": 11,
+      "filter": [
+        "all",
+        [
+          "any",
+          ["==", ["get", "seamark:type"], "beacon_cardinal"],
+          ["==", ["get", "seamark:type"], "beacon_isolated_danger"],
+          ["==", ["get", "seamark:type"], "beacon_lateral"],
+          ["==", ["get", "seamark:type"], "beacon_safe_water"],
+          ["==", ["get", "seamark:type"], "beacon_special_purpose"],
+          ["==", ["get", "seamark:type"], "buoy_cardinal"],
+          ["==", ["get", "seamark:type"], "buoy_installation"],
+          ["==", ["get", "seamark:type"], "buoy_isolated_danger"],
+          ["==", ["get", "seamark:type"], "buoy_lateral"],
+          ["==", ["get", "seamark:type"], "buoy_safe_water"],
+          ["==", ["get", "seamark:type"], "buoy_special_purpose"]
+        ],
+        [
+          "any",
+          ["==", ["get", "direction"], "clockwise"],
+          ["==", ["get", "direction"], "anticlockwise"]
+        ]
+      ],
+      "layout": {
+        "icon-allow-overlap": true,
+        "icon-ignore-placement": true,
+        "icon-size": 0.5,
+        "icon-rotate": -90,
+        "icon-image": [
+          "case",
+          ["==", ["get", "direction"], "clockwise"],
+          "round_to_starboard",
+          "round_to_port"
+        ]
+      }
+    },
+
     {
       "id": "hazard[symbol]",
       "type": "symbol",
@@ -2197,31 +2228,6 @@
         "icon-size": 0.15,
         "symbol-placement": "point",
         "icon-anchor": "center"
-      }
-    },
-    {
-      "id": "portage[line]",
-      "type": "line",
-      "source": "seamarks",
-      "source-layer": "seamarks",
-      "minzoom": 11,
-      "filter": [
-        "any",
-        ["==", ["get", "canoe"], "portage"],
-        ["==", ["get", "whitewater"], "portage_way"],
-        ["==", ["get", "portage"], "yes"],
-        ["==", ["get", "portage"], "designated"]
-      ],
-      "layout": { "line-cap": "butt" },
-      "paint": {
-        "line-color": "#d400d4",
-        "line-width": 3,
-        "line-dasharray": [
-          "case",
-          ["==", ["get", "highway"], "steps"],
-          ["literal", [0.5, 0.5]],
-          ["literal", [1]]
-        ]
       }
     }
   ],
