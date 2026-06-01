@@ -36,7 +36,11 @@
       "filter": [
         "any",
         ["==", ["get", "leisure"], "swimming_area"],
-        ["==", ["get", "seamark:restricted_area:restriction"], "no_entry"]
+        [
+          "in",
+          "no_entry",
+          ["split", ["get", "seamark:restricted_area:restriction"], ";"]
+        ]
       ],
       "paint": { "fill-pattern": "no_entry", "fill-opacity": 0.5 }
     },
@@ -49,7 +53,11 @@
       "filter": [
         "any",
         ["==", ["get", "leisure"], "swimming_area"],
-        ["==", ["get", "seamark:restricted_area:restriction"], "no_entry"]
+        [
+          "in",
+          "no_entry",
+          ["split", ["get", "seamark:restricted_area:restriction"], ";"]
+        ]
       ],
       "paint": { "line-color": "#f00", "line-opacity": 0.5 }
     },
@@ -672,7 +680,11 @@
         ],
         [
           "!",
-          ["==", ["get", "seamark:restricted_area:restriction"], "no_entry"]
+          [
+            "in",
+            "no_entry",
+            ["split", ["get", "seamark:restricted_area:restriction"], ";"]
+          ]
         ]
       ],
       "layout": {
@@ -1836,7 +1848,11 @@
         ],
         [
           "!",
-          ["==", ["get", "seamark:restricted_area:restriction"], "no_entry"]
+          [
+            "in",
+            "no_entry",
+            ["split", ["get", "seamark:restricted_area:restriction"], ";"]
+          ]
         ]
       ],
       "paint": { "fill-color": "#fff", "fill-opacity": 0.1 }
