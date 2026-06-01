@@ -1,4 +1,4 @@
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -94,6 +94,8 @@ public class LightCharacteristics {
         // no group, simple case
         str += LITCHR;
       }
+    } else if (SIGGRP != "") {
+      str += LITCHR + "(" + SIGGRP + ")";
     }
 
     // if the last character is not a bracket, and the next token
@@ -111,7 +113,7 @@ public class LightCharacteristics {
     }
 
     // add another dot, unless the previous group was empty
-    if (str != "" && str.charAt(str.length() - 1) != '.'
+    if (str != "" && str.charAt(str.length() - 1) != '.' && str.charAt(str.length() - 1) != ')'
         && !(str.length() > 2 && str.substring(str.length() - 2) == ": ")) {
       str += ".";
     }
@@ -159,7 +161,7 @@ public class LightCharacteristics {
    * newline character. Removes duplicate sector descriptions.
    */
   public static String encodeComplexLx(Map<String, Object> tags) {
-    Set<String> sectors = new HashSet<>();
+    Set<String> sectors = new LinkedHashSet<>();
 
     // single light
     if (tags.containsKey("seamark:light:colour")) {

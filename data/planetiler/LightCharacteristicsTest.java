@@ -24,6 +24,17 @@ class LightCharacteristicsTest {
   }
 
   @Test
+  void fogSignal_group_but_no_char() {
+    Map<String, Object> tags = Map.of(
+        //
+        "seamark:fog_signal:category", "horn", //
+        "seamark:fog_signal:period", "2", //
+        "seamark:fog_signal:group", "1" //
+    );
+    assertEquals("Horn: (1)2s", LightCharacteristics.encodeComplexLx(tags));
+  }
+
+  @Test
   void fogSignal_complex() {
     Map<String, Object> tags = Map.of(
         //
@@ -67,7 +78,7 @@ class LightCharacteristicsTest {
         Map.entry("seamark:light:2:group", "1"), //
         Map.entry("seamark:light:2:period", "1") //
     );
-    assertEquals("4F.YGR.49m(vert)\nAeroQ(1)R.1s\nHorn: .8s",
+    assertEquals("4F.YGR.49m(vert)\nAeroQ(1)R.1s\nHorn: (1)8s",
         LightCharacteristics.encodeComplexLx(tags));
   }
 }

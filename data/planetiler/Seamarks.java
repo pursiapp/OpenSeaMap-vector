@@ -118,7 +118,8 @@ public class Seamarks implements Profile {
 
     // add some derived tags which are far too complicated to
     // calculate using maplibre style expressions.
-    if (tags.containsKey("seamark:light:colour") || tags.containsKey("seamark:light:1:colour")) {
+    if (tags.containsKey("seamark:light:colour") || tags.containsKey("seamark:light:1:colour")
+        || tags.containsKey("seamark:fog_signal:category")) {
       collected.setAttr("_lx", LightCharacteristics.encodeComplexLx(tags));
     }
     if ("fuel".equals(tags.get("waterway"))
