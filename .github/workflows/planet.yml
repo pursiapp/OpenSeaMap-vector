@@ -5,10 +5,16 @@ on:
     - cron: "6 6 6 * *" # on the 6th day of every month
   workflow_dispatch:
 
+permissions:
+  contents: write # needed for GitHub Release uploads
+  actions: read   # needed for artifact download
+
 jobs:
+  # ── STEP 1: Download each continent PBF, filter with osmium ──
+  # (unchanged from upstream — battle-tested)
   download_planet:
     runs-on: ubuntu-latest
-    continue-on-error: false # if one region fails, the entire workflow should fail
+    continue-on-error: false
 
     strategy:
       matrix:
@@ -57,13 +63,10 @@ jobs:
           path: data/${{ matrix.continent }}.pbf
           retention-days: 0.5
 
-  generate_tiles:
+  # ── STEP 2: Merge all continents → global PMTiles → create Release ──
+  generate_global:
     needs: download_planet
     runs-on: ubuntu-latest
-
-    environment:
-      name: cloudflare
-      url: https://cdn-oceania-07.kyle.kiwi
 
     steps:
       - name: Checkout code
@@ -87,16 +90,70 @@ jobs:
             $(printf '/cwd/%s ' data/tmp_pbf/*.pbf) \
             -o /cwd/data/public/seamarks.pbf
 
-      - name: Run planetiler
+      - name: Run planetiler (global)
         run: . ./tiles.sh
 
-      - name: Configure the AWS CLI for R2
+      - name: Set release metadata
+        id: release
         run: |
-          aws configure set aws_access_key_id ${{ secrets.R2_ACCESS_KEY_ID }}
-          aws configure set aws_secret_access_key ${{ secrets.R2_SECRET_ACCESS_KEY }}
-          aws configure set default.region auto
+          echo "tag=data/v$(date +%Y%m%d)" >> $GITHUB_OUTPUT
+          echo "name=Seamarks PMTiles — $(date +%B %Y)" >> $GITHUB_OUTPUT
 
-      - name: Upload to R2
+      - name: Upload global PMTiles to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.release.outputs.tag }}
+          name: ${{ steps.release.outputs.name }}
+          files: data/public/seamarks.pmtiles
+          make_latest: true
+
+  # ── STEP 3: Per-continent PMTiles (runs after global, parallel matrix) ──
+  generate_continent:
+    needs: [download_planet, generate_global]
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        continent:
+          - africa
+          - antarctica
+          - asia
+          - australia-oceania
+          - central-america
+          - europe
+          - north-america
+          - south-america
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Download continent PBF artifact
+        uses: actions/download-artifact@v5
+        with:
+          name: planet-${{ matrix.continent }}
+          path: data/
+
+      - name: Prepare continent PBF for planetiler
         run: |
-          aws s3 sync ./data/public s3://${{ secrets.R2_BUCKET }} \
-            --endpoint-url https://${{ secrets.R2_ACCOUNT_ID }}.r2.cloudflarestorage.com
+          mkdir -p data/public
+          cp data/${{ matrix.continent }}.pbf data/public/seamarks.pbf
+          rm -f data/public/seamarks.pmtiles
+
+      - name: Run planetiler (${{ matrix.continent }})
+        run: . ./tiles.sh
+
+      - name: Rename output
+        run: mv data/public/seamarks.pmtiles data/public/seamarks_${{ matrix.continent }}.pmtiles
+
+      - name: Set release tag
+        id: tag
+        run: echo "tag=data/v$(date +%Y%m%d)" >> $GITHUB_OUTPUT
+
+      - name: Upload continent PMTiles to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          files: data/public/seamarks_${{ matrix.continent }}.pmtiles
