@@ -181,10 +181,12 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh run download ${{ inputs.previous_run_id }} \
-            --repo ${{ github.repository }} \
-            --pattern 'planet-*' \
-            --dir data/input/
+          for c in africa antarctica asia australia-oceania central-america europe north-america south-america; do
+            gh run download ${{ inputs.previous_run_id }} \
+              --repo ${{ github.repository }} \
+              --name planet-$c \
+              --dir data/input/
+          done
 
       - name: Run planetiler (global — reads all .pbf from data/input/)
         run: . ./tiles.sh
