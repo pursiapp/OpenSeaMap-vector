@@ -8,6 +8,6 @@ echo "running planetiler…"
   --workdir=/cwd \
   docker.io/library/maven:3.9-eclipse-temurin-22 \
   sh -c '
-    mvn -q package dependency:copy-dependencies -DincludeScope=compile -DskipTests &&
+    mvn -q package dependency:copy-dependencies -DincludeScope=compile -DskipTests -Dformatter.skip=true &&
     java -Xmx4g -cp "/cwd/target/classes:/cwd/target/dependency/*" Seamarks
   '
