@@ -657,19 +657,37 @@
               [
                 "case",
                 ["has", "maxdraft"],
-                ["concat", ". ", ["get", "maxdraft"], "m draft"],
+                [
+                  "concat",
+                  ". ",
+                  ["get", "maxdraft"],
+                  ["case", ["in", "'", ["get", "maxdraft"]], "", "m"],
+                  " draft"
+                ],
                 ""
               ],
               [
                 "case",
                 ["has", "maxlength"],
-                ["concat", ". ", ["get", "maxlength"], "m LOA"],
+                [
+                  "concat",
+                  ". ",
+                  ["get", "maxlength"],
+                  ["case", ["in", "'", ["get", "maxlength"]], "", "m"],
+                  " LOA"
+                ],
                 ""
               ],
               [
                 "case",
                 ["has", "maxwidth"],
-                ["concat", ". ", ["get", "maxwidth"], "m wide"],
+                [
+                  "concat",
+                  ". ",
+                  ["get", "maxwidth"],
+                  ["case", ["in", "'", ["get", "maxwidth"]], "", "m"],
+                  " wide"
+                ],
                 ""
               ]
             ],
@@ -1541,19 +1559,37 @@
                 [
                   "case",
                   ["has", "maxdraft"],
-                  ["concat", ". ", ["get", "maxdraft"], "m draft"],
+                  [
+                    "concat",
+                    ". ",
+                    ["get", "maxdraft"],
+                    ["case", ["in", "'", ["get", "maxdraft"]], "", "m"],
+                    " draft"
+                  ],
                   ""
                 ],
                 [
                   "case",
                   ["has", "maxlength"],
-                  ["concat", ". ", ["get", "maxlength"], "m LOA"],
+                  [
+                    "concat",
+                    ". ",
+                    ["get", "maxlength"],
+                    ["case", ["in", "'", ["get", "maxlength"]], "", "m"],
+                    " LOA"
+                  ],
                   ""
                 ],
                 [
                   "case",
                   ["has", "maxwidth"],
-                  ["concat", ". ", ["get", "maxwidth"], "m wide"],
+                  [
+                    "concat",
+                    ". ",
+                    ["get", "maxwidth"],
+                    ["case", ["in", "'", ["get", "maxwidth"]], "", "m"],
+                    " wide"
+                  ],
                   ""
                 ]
               ],
