@@ -2,8 +2,12 @@ import com.onthegomap.planetiler.*;
 import com.onthegomap.planetiler.reader.osm.*;
 import com.onthegomap.planetiler.config.*;
 import com.onthegomap.planetiler.reader.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 
 public class Seamarks implements Profile {
@@ -219,8 +223,34 @@ public class Seamarks implements Profile {
   }
 
   public static void main(String[] args) {
-    Planetiler.create(Arguments.fromArgs(args))
-        .addOsmSource("osm", Path.of("data/public/seamarks.pbf"))
-        .overwriteOutput(Path.of("data/public/seamarks.pmtiles")).setProfile(new Seamarks()).run();
+    Path inputDir = Paths.get("data/input");
+    Planetiler planetiler = Planetiler.create(Arguments.fromArgs(args));
+
+    if (Files.isDirectory(inputDir)) {
+      // Multiple .pbf files — add each as a separate OSM source.
+      // Planetiler handles duplicates across sources correctly.
+      try (Stream<Path> files = Files.list(inputDir)) {
+        List<Path> pbfs = files
+          .filter(p -> p.toString().endsWith(".pbf"))
+          .sorted()
+          .toList();
+        if (pbfs.isEmpty()) {
+          // fallback: single file
+          planetiler.addOsmSource("osm", Path.of("data/public/seamarks.pbf"));
+        } else {
+          for (int i = 0; i < pbfs.size(); i++) {
+            planetiler.addOsmSource("osm" + i, pbfs.get(i));
+          }
+        }
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    } else {
+      planetiler.addOsmSource("osm", Path.of("data/public/seamarks.pbf"));
+    }
+
+    planetiler.overwriteOutput(Path.of("data/public/seamarks.pmtiles"))
+      .setProfile(new Seamarks())
+      .run();
   }
 }

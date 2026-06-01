@@ -63,7 +63,9 @@ jobs:
           path: data/${{ matrix.continent }}.pbf
           retention-days: 0.5
 
-  # ── STEP 2: Merge all continents → global PMTiles → create Release ──
+  # ── STEP 2: Planetiler reads all continents directly → global PMTiles → create Release ──
+  # Seamarks.java detects data/input/*.pbf and adds each as a separate OSM source.
+  # This avoids osmium merge which produces duplicate boundary nodes.
   generate_global:
     needs: download_planet
     runs-on: ubuntu-latest
@@ -74,32 +76,14 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Download all the seamarks.pbf files from the previous jobs
+      - name: Download all continent PBF artifacts into data/input/
         uses: actions/download-artifact@v5
         with:
-          path: data/tmp_pbf
+          path: data/input
           pattern: planet-*
           merge-multiple: true
 
-      - name: Merge & sort continent PBFs into single file
-        run: |
-          docker run --rm -v $(pwd):/cwd \
-            iboates/osmium:1.19.0 \
-            merge \
-            --progress \
-            $(printf '/cwd/%s ' data/tmp_pbf/*.pbf) \
-            -o /cwd/data/public/seamarks_merged.pbf
-          # planetiler requires nodes sorted ascending by ID.
-          # osmium merge can produce unsorted output when continents
-          # have overlapping boundary data (duplicate nodes).
-          docker run --rm -v $(pwd):/cwd \
-            iboates/osmium:1.19.0 \
-            sort \
-            --progress \
-            -o /cwd/data/public/seamarks.pbf \
-            /cwd/data/public/seamarks_merged.pbf
-
-      - name: Run planetiler (global)
+      - name: Run planetiler (global — reads all .pbf from data/input/)
         run: . ./tiles.sh
 
       - name: Set release metadata
@@ -144,6 +128,7 @@ jobs:
         with:
           name: planet-${{ matrix.continent }}
           path: data/
+          merge-multiple: true
 
       - name: Prepare continent PBF for planetiler
         run: |
