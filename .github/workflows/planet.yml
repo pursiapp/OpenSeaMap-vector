@@ -155,8 +155,10 @@ jobs:
           tag_name: ${{ needs.create_release.outputs.tag }}
           files: data/public/seamarks_${{ matrix.continent }}.pmtiles
 
-  # ── STEP 3: Global PMTiles (reads all continents directly — no merge) ──
-  # Seamarks.java detects data/input/*.pbf → adds each as separate OSM source.
+  # ── STEP 3: Global PMTiles (merge continents → sort → dedup → planetiler) ──
+  # osmium merge can produce duplicate (type, ID) pairs when geofabrik continent
+  # extracts were generated at slightly different times (version mismatch).
+  # dedup.py removes these before planetiler, which requires unique ascending IDs.
   generate_global:
     needs: [download_planet, create_release]
     if: ${{ !cancelled() && !failure() }}
@@ -172,7 +174,7 @@ jobs:
         if: ${{ !inputs.skip_download }}
         uses: actions/download-artifact@v5
         with:
-          path: data/input
+          path: data/tmp_pbf
           pattern: planet-*
           merge-multiple: true
 
@@ -185,10 +187,32 @@ jobs:
             gh run download ${{ inputs.previous_run_id }} \
               --repo ${{ github.repository }} \
               --name planet-$c \
-              --dir data/input/
+              --dir data/tmp_pbf/
           done
 
-      - name: Run planetiler (global — reads all .pbf from data/input/)
+      - name: Install pyosmium
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq python3-pyosmium
+
+      - name: Merge, sort & deduplicate continent PBFs
+        run: |
+          mkdir -p data/public
+          # Step 1: Merge 8 continent PBFs (may produce version-based duplicates)
+          docker run --rm -v $(pwd):/cwd \
+            iboates/osmium:1.19.0 merge --progress \
+            $(printf '/cwd/%s ' data/tmp_pbf/*.pbf) \
+            -o /cwd/data/public/seamarks_merged.pbf
+          # Step 2: Sort (ensures strict ascending ID order)
+          docker run --rm -v $(pwd):/cwd \
+            iboates/osmium:1.19.0 sort --progress \
+            -o /cwd/data/public/seamarks_sorted.pbf \
+            /cwd/data/public/seamarks_merged.pbf
+          # Step 3: Deduplicate (removes objects with duplicate (type, ID) pairs)
+          python3 data/dedup.py \
+            data/public/seamarks_sorted.pbf \
+            data/public/seamarks.pbf
+
+      - name: Run planetiler (global)
         run: . ./tiles.sh
 
       - name: Upload global PMTiles to GitHub Release
